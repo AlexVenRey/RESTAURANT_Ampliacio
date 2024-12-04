@@ -88,6 +88,60 @@ body {
     width: 100%;
 }
 
+.botones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%; /* Ocupa la mitad derecha */
+    height: 100%;
+    background-color: white; /* Fondo blanco para contraste */
+}
+
+.botones button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+    width: 70%; /* Ancho ajustado */
+}
+
+.botones button:hover {
+    background-color: #0056b3;
+}
+
+/* Ajuste de imagen */
+.imgIndex {
+    width: 50%; /* Ocupa la mitad izquierda */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.boton-estilo {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Opcional: para que el botón ocupe todo el ancho del contenedor */
+    text-align: center;
+}
+
+.boton-estilo:hover {
+    background-color: #0056b3;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {

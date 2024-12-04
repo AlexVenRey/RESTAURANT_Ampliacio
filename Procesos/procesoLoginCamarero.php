@@ -40,3 +40,4 @@
         echo "Error al iniciar sesión: " . $e->getMessage();
         die();
     }
+?>

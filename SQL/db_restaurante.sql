@@ -10,6 +10,14 @@ CREATE TABLE tbl_camarero (
     pwd_camarero CHAR(64) NOT NULL
 );
 
+CREATE TABLE tbl_usuarios (
+    id_usuario INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name_usuario VARCHAR(30) NOT NULL,
+    surname_usuario VARCHAR(30) NOT NULL,
+    username_usuario VARCHAR(30) NOT NULL,
+    pwd_usuario CHAR(64) NOT NULL
+);
+
 CREATE TABLE tbl_salas (
     id_salas INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name_sala VARCHAR(15) NOT NULL,
