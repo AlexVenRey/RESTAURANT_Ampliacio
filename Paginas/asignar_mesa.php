@@ -16,13 +16,17 @@
             session_start();
 
             // Comprobación de sesión activa
-            if (!isset($_SESSION["camareroID"]) && !isset($_SESSION['sala'])) {
+            if (!isset($_SESSION["camareroID"]) && !isset($_SESSION['usuarioID']) && !isset($_SESSION['sala'])) {
                 header('Location: ../index.php');
                 exit();
             }
 
-            $id_user = $_SESSION["camareroID"]; // ID del camarero actual
-
+            if (isset($_SESSION["camareroID"])) {
+                $id_user = $_SESSION["camareroID"];
+            } elseif (isset($_SESSION["usuarioID"])) {
+                $id_user = $_SESSION["usuarioID"];
+            }
+            
             if (isset($_POST['mesa'])) {
                 $id_mesa = $_POST['mesa'];
 
