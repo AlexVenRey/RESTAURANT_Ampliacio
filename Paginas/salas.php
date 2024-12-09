@@ -65,7 +65,7 @@
                 }
 
                 if (isset($_SESSION["usuarioID"])) {
-                    echo '<a href="./reservas.php"><button type="submit" class="back">Reservar</button></a>';
+                    echo '<a href="./reservar.php"><button type="submit" class="back">Reservar</button></a>';
                 }
             ?>
             <h1>¡Selecciona una sala para ver su disponibilidad de mesas!</h1>

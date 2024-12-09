@@ -30,13 +30,20 @@ CREATE TABLE tbl_mesas (
     id_sala INT NOT NULL
 );
 
-CREATE TABLE tbl_historial(
+CREATE TABLE tbl_historial (
     id_historial INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     fecha_A datetime NOT NULL,
     fecha_NA datetime NULL,
     assigned_by INT NOT NULL,
     assigned_to VARCHAR(30) NOT NULL,
     id_mesa INT NOT NULL
+);
+
+CREATE TABLE tbl_administrador(
+    id_administrador INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nombre_administrador VARCHAR(30) NOT NULL,
+    username_administrador VARCHAR(30) NOT NULL,
+    pwd_administrador CHAR(64) NOT NULL
 );
 
 ALTER TABLE tbl_mesas ADD CONSTRAINT fk_sala_mesa FOREIGN KEY (id_sala) REFERENCES tbl_salas(id_salas);
@@ -59,6 +66,9 @@ VALUES
 ('Lucía', 'Morales', 'lmorales', SHA2('Camarero123.', 256)),
 ('David', 'Ruiz', 'druiz', SHA2('Camarero123.', 256));
 
+INSERT INTO tbl_administrador (nombre_administrador, username_administrador, pwd_administrador)
+VALUES
+('administrador', 'admin', SHA2('admin.', 256));
 
 -- Inserciones en la tabla tbl_salas
 INSERT INTO tbl_salas (name_sala, tipo_sala)
