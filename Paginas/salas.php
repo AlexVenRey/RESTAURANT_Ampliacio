@@ -14,11 +14,11 @@
                 session_start();
 
                 // Sesión iniciada
-                if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"])) {
+                if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"]) && !isset($_SESSION["adminID"])) {
                     header('Location: ../index.php?error=nosesion');
                     exit();
                 } else {
-                    $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : $_SESSION["usuarioID"];
+                    $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : (isset($_SESSION["usuarioID"]) ? $_SESSION["usuarioID"] : $_SESSION["adminID"]);
                 }
 
                 // Consulta SQL para obtener las salas y contar las mesas libres

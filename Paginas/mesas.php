@@ -15,11 +15,11 @@
             session_start();
 
             // Comprobación de sesión activa
-            if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"])) {
+            if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"]) && !isset($_SESSION["adminID"])) {
                 header('Location: ../index.php');
                 exit();
             } else {
-                $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : $_SESSION["usuarioID"];
+                $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : (isset($_SESSION["usuarioID"]) ? $_SESSION["usuarioID"] : (isset($_SESSION["adminID"]) ? $_SESSION["adminID"] : null));
                 // sesión de sala
                 if (isset($_POST['sala'])){
                     $_SESSION['sala'] = $_POST['sala'];

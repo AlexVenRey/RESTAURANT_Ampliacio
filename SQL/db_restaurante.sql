@@ -68,7 +68,7 @@ VALUES
 
 INSERT INTO tbl_administrador (nombre_administrador, username_administrador, pwd_administrador)
 VALUES
-('administrador', 'admin', SHA2('admin.', 256));
+('administrador', 'admin', SHA2('admin', 256));
 
 -- Inserciones en la tabla tbl_salas
 INSERT INTO tbl_salas (name_sala, tipo_sala)

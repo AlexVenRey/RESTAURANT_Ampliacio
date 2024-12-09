@@ -25,6 +25,8 @@
                 $id_user = $_SESSION["camareroID"];
             } elseif (isset($_SESSION["usuarioID"])) {
                 $id_user = $_SESSION["usuarioID"];
+            } elseif (isset($_SESSION["adminID"])) {
+                $id_user = $_SESSION["adminID"];
             }
             
             if (isset($_POST['mesa'])) {
