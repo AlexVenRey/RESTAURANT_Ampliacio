@@ -10,8 +10,9 @@
     <form action="./mesas.php" method="POST" id="fomruarioDiv">
         <div class="container">
             <?php
-                require_once "../Procesos/conection.php";
+                require_once "../Procesos/conection.php";  // Conexión PDO
                 session_start();
+
                 // Sesión iniciada
                 if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"])) {
                     header('Location: ../index.php?error=nosesion');
@@ -31,14 +32,15 @@
                     GROUP BY s.id_salas
                 ";
                 
+                // Preparar y ejecutar la consulta
                 $stmt = $conn->prepare($consulta);
-                // Ejecutar la consulta
                 if ($stmt->execute()) {
-                    // Obtener los resultados
-                    $resultado = $stmt->get_result();
+                    // Obtener los resultados usando fetch() de PDO
+                    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
                     // Generación de botones para cada sala con el conteo de mesas libres
-                    if ($resultado->num_rows > 0) {
-                        while ($fila = $resultado->fetch_assoc()) {
+                    if (count($resultado) > 0) {
+                        foreach ($resultado as $fila) {
                             $nombre_sala = htmlspecialchars($fila['name_sala']); // Sanitizar el nombre de la sala
                             $total_mesas = $fila['total_mesas'];
                             $mesas_libres = $fila['mesas_libres'];
@@ -51,8 +53,6 @@
                 } else {
                     echo "<p>Error al ejecutar la consulta</p>";
                 }
-                // Cerrar la declaración y la conexión
-                $stmt->close();
             ?>
         </div>
     </form>

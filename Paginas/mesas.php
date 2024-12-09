@@ -11,7 +11,7 @@
     <a href="salas.php"><button class="back">Volver a salas</button></a>
     <div class="contenedor">       
         <?php
-            require_once "../Procesos/conection.php";
+            require_once "../Procesos/conection.php";  // Conexión PDO
             session_start();
 
             // Comprobación de sesión activa
@@ -20,9 +20,9 @@
                 exit();
             } else {
                 $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : $_SESSION["usuarioID"];
-                // sesion de sala
+                // sesión de sala
                 if (isset($_POST['sala'])){
-                $_SESSION['sala'] = $_POST['sala'];
+                    $_SESSION['sala'] = $_POST['sala'];
                 }
             }
 
@@ -35,12 +35,11 @@
             
                 // Consultar ID de la sala basada en el nombre
                 $stmt = $conn->prepare("SELECT id_salas FROM tbl_salas WHERE name_sala = ?");
-                $stmt->bind_param("s", $nombre_sala);
+                $stmt->bindValue(1, $nombre_sala, PDO::PARAM_STR);
                 $stmt->execute();
-                $resultado = $stmt->get_result();
             
                 // Obtener el ID de la sala
-                if ($fila = $resultado->fetch_assoc()) {
+                if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $id_sala = $fila['id_salas'];
                 
                     // Consultar las mesas en esa sala
@@ -54,17 +53,14 @@
                     LEFT JOIN tbl_historial h ON m.id_mesa = h.id_mesa AND h.fecha_NA IS NULL
                     WHERE m.id_sala = ?
                     "); 
-                    $stmt_mesas->bind_param("i", $id_sala);
+                    $stmt_mesas->bindValue(1, $id_sala, PDO::PARAM_INT);
                     $stmt_mesas->execute();
-                    $resultado_mesas = $stmt_mesas->get_result();
-                
                 
                     // Mostrar mesas como botones
                     echo "<h2>Mesas en: $nombre_sala</h2>";
                     echo "<form action='./asignar_mesa.php' method='POST'>";
                     switch ($_SESSION["sala"]) {
                     case 'Terraza_1':
-                    
                         echo "<div class='terrazafoto'>";
                         echo '<img src="../CSS/img/salas + mesas/Terraza1.png" alt="" id="terrazafoto">';
                         echo "</div>";
@@ -114,8 +110,10 @@
                         break;
                     }
 
-                    if ($resultado_mesas->num_rows > 0) {
-                        while ($mesa = $resultado_mesas->fetch_assoc()) {
+                    // Obtener las mesas y mostrar botones
+                    $mesas = $stmt_mesas->fetchAll(PDO::FETCH_ASSOC);
+                    if (count($mesas) > 0) {
+                        foreach ($mesas as $mesa) {
                             $id_mesa = htmlspecialchars($mesa['id_mesa']);
                             $n_asientos = htmlspecialchars($mesa['n_asientos']);
                             $estado_mesa = htmlspecialchars($mesa['estado_mesa']);
@@ -131,21 +129,19 @@
                     }
                 
                     echo "</form>"; // Cerrar formulario
-                
-                    // Cerrar declaración de mesas
-                    $stmt_mesas->close();
                 } else {
                     echo "<p>No se encontró la sala especificada.</p>";
                 }
             
                 // Cerrar declaración de sala
-                $stmt->close();
+                $stmt->closeCursor();
+                $stmt_mesas->closeCursor();
             } else {
                 echo "<p>No se ha seleccionado ninguna sala.</p>";
             }
 
             // Cerrar conexión
-            $conn->close();
+            $conn = null;
         ?>
     </div>
 </body>

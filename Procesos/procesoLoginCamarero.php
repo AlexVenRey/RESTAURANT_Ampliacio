@@ -1,42 +1,44 @@
 <?php
     session_start();
 
-    include_once("./conection.php");
+    include_once("./conection.php");  // Conexión PDO establecida aquí
 
     if (!filter_has_var(INPUT_POST, 'enviar')) {
         header("Location: ../formCamarero.php?error=inicioMal");
         exit();
     }
 
-    $usr = mysqli_escape_string($conn, htmlspecialchars($_POST["username"]));
-    $pwd = mysqli_escape_string($conn, htmlspecialchars(hash('sha256', $_POST["pwd"])));
+    $usr = htmlspecialchars($_POST["username"]);
+    $pwd = hash('sha256', $_POST["pwd"]); // Se mantiene la misma forma de encriptación
 
     try {
-        $sqlInicio = "SELECT id_camarero, pwd_camarero FROM tbl_camarero WHERE username_camarero = ?";
-        $stmt = mysqli_stmt_init($conn);
-        mysqli_stmt_prepare($stmt, $sqlInicio);
-        mysqli_stmt_bind_param($stmt, "s", $usr);
-        mysqli_stmt_execute($stmt);
-        $resultado = mysqli_stmt_get_result($stmt);
+        // Aquí ya no es necesario crear una nueva conexión, usamos la conexión que ya existe en $conn
+        // En este punto ya tienes la conexión PDO establecida en el archivo "conection.php"
 
-        if (mysqli_num_rows($resultado) > 0) {
-            $row = mysqli_fetch_assoc($resultado);
+        $sql = "SELECT id_camarero, pwd_camarero FROM tbl_camarero WHERE username_camarero = :username";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':username', $usr, PDO::PARAM_STR);
+        $stmt->execute();
+
+        // Verificar si se encontró el camarero
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $_SESSION["camareroID"] = $row["id_camarero"];
 
+            // Verificar si las contraseñas coinciden
             if ($pwd !== $row["pwd_camarero"]) {
                 header("Location: ../formCamarero.php?error=datosMal");
                 exit();
             }
 
-            // Redirige a index.php con el parámetro de éxito
+            // Redirigir a salas.php con el parámetro de éxito
             header("Location: ../Paginas/salas.php?login=success");
             exit();
         } else {
             header("Location: ../formCamarero.php?error=datosMal");
             exit();
         }
-        mysqli_stmt_close($stmt);
-    } catch (Exception $e) {
+    } catch (PDOException $e) {
         echo "Error al iniciar sesión: " . $e->getMessage();
         die();
     }
