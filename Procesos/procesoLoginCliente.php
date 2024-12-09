@@ -4,7 +4,7 @@
     include_once("./conection.php");
 
     if (!filter_has_var(INPUT_POST, 'enviar')) {
-        header("Location: ../index.php?error=inicioMal");
+        header("Location: ../formCliente.php?error=inicioMal");
         exit();
     }
 
@@ -24,7 +24,7 @@
             $_SESSION["usuarioID"] = $row["id_usuario"];
 
             if ($pwd !== $row["pwd_usuario"]) {
-                header("Location: ../index.php?error=datosMal");
+                header("Location: ../formCliente.php?error=datosMal");
                 exit();
             }
 
@@ -32,7 +32,7 @@
             header("Location: ../Paginas/salas.php?login=success");
             exit();
         } else {
-            header("Location: ../index.php?error=datosMal");
+            header("Location: ../formCliente.php?error=datosMal");
             exit();
         }
         mysqli_stmt_close($stmt);

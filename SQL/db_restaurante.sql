@@ -51,6 +51,15 @@ VALUES
 ('Jorge', 'Hernández', 'jhernandez', SHA2('Camarero123.', 256)),
 ('Elena', 'López', 'elopez', SHA2('Camarero123.', 256));
 
+INSERT INTO tbl_usuarios (name_usuario, surname_usuario, username_usuario, pwd_usuario)
+VALUES
+('Miguel', 'Rodríguez', 'mrodriguez', SHA2('Camarero123.', 256)),
+('Sofía', 'Gómez', 'sgomez', SHA2('Camarero123.', 256)),
+('Pablo', 'Fernández', 'pfernandez', SHA2('Camarero123.', 256)),
+('Lucía', 'Morales', 'lmorales', SHA2('Camarero123.', 256)),
+('David', 'Ruiz', 'druiz', SHA2('Camarero123.', 256));
+
+
 -- Inserciones en la tabla tbl_salas
 INSERT INTO tbl_salas (name_sala, tipo_sala)
 VALUES

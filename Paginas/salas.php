@@ -13,12 +13,13 @@
                 require_once "../Procesos/conection.php";
                 session_start();
                 // Sesión iniciada
-                if (!isset($_SESSION["camareroID"])) {
+                if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"])) {
                     header('Location: ../index.php?error=nosesion');
                     exit();
                 } else {
-                    $id_user = $_SESSION["camareroID"];
+                    $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : $_SESSION["usuarioID"];
                 }
+
                 // Consulta SQL para obtener las salas y contar las mesas libres
                 $consulta = "
                     SELECT s.name_sala, 
@@ -29,6 +30,7 @@
                     LEFT JOIN tbl_historial h ON m.id_mesa = h.id_mesa AND h.fecha_NA IS NULL
                     GROUP BY s.id_salas
                 ";
+                
                 $stmt = $conn->prepare($consulta);
                 // Ejecutar la consulta
                 if ($stmt->execute()) {
@@ -57,7 +59,15 @@
     <div class="contenedor">
         <div class="footer">
             <a href="../Procesos/destruir.php"><button type="submit" class="logout">Cerrar Sesión</button></a>
-            <a href="./historial"><button type="submit" class="back">Historial</button></a>
+            <?php
+                if (isset($_SESSION["camareroID"])) {
+                    echo '<a href="./historial.php"><button type="submit" class="back">Historial</button></a><br>';
+                }
+
+                if (isset($_SESSION["usuarioID"])) {
+                    echo '<a href="./reservas.php"><button type="submit" class="back">Reservar</button></a>';
+                }
+            ?>
             <h1>¡Selecciona una sala para ver su disponibilidad de mesas!</h1>
         </div>
         <div class="contenedor-superior">
