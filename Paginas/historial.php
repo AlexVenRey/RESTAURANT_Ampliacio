@@ -1,5 +1,4 @@
 <?php
-    
     require_once "../Procesos/conection.php";
     session_start();
 
@@ -14,7 +13,6 @@
     $selectedTable = isset($_POST['table']) ? $_POST['table'] : null;
     $filterDate = isset($_POST['filter_date']) ? $_POST['filter_date'] : null;
     $filterCamarero = isset($_POST['filter_camarero']) ? $_POST['filter_camarero'] : null;
-
 ?>
 
 <!DOCTYPE html>
@@ -38,14 +36,12 @@
             // Query to fetch rooms
             $stmt_rooms = $conn->prepare("SELECT id_salas, name_sala FROM tbl_salas");
             $stmt_rooms->execute();
-            $result_rooms = $stmt_rooms->get_result();
+            $result_rooms = $stmt_rooms->fetchAll(PDO::FETCH_ASSOC);
 
-            while ($row = $result_rooms->fetch_assoc()) {
+            foreach ($result_rooms as $row) {
                 $selected = ($SalaSeleccionada == $row['id_salas']) ? 'selected' : '';
                 echo "<option value='" . $row['id_salas'] . "' $selected>" . $row['name_sala'] . "</option>";
             }
-
-            $stmt_rooms->close();
             ?>
         </select>
     </form>
@@ -68,16 +64,14 @@
                     LEFT JOIN tbl_historial h ON m.id_mesa = h.id_mesa AND h.fecha_NA IS NULL
                     WHERE m.id_sala = ?
                 ");
-                $stmt_tables->bind_param("i", $SalaSeleccionada);
+                $stmt_tables->bindValue(1, $SalaSeleccionada, PDO::PARAM_INT);
                 $stmt_tables->execute();
-                $result_tables = $stmt_tables->get_result();
+                $result_tables = $stmt_tables->fetchAll(PDO::FETCH_ASSOC);
 
-                while ($row = $result_tables->fetch_assoc()) {
+                foreach ($result_tables as $row) {
                     $selected = ($selectedTable == $row['id_mesa']) ? 'selected' : '';
                     echo "<option value='" . $row['id_mesa'] . "' $selected>Mesa " . $row['id_mesa'] . " (" . $row['n_asientos'] . " asientos, " . $row['estado_mesa'] . ")</option>";
                 }
-
-                $stmt_tables->close();
                 ?>
             </select>
             <input type="hidden" name="room" value="<?php echo $SalaSeleccionada; ?>">
@@ -100,14 +94,12 @@
                 // Query to fetch all camareros
                 $stmt_camareros = $conn->prepare("SELECT id_camarero, name_camarero, surname_camarero FROM tbl_camarero");
                 $stmt_camareros->execute();
-                $result_camareros = $stmt_camareros->get_result();
+                $result_camareros = $stmt_camareros->fetchAll(PDO::FETCH_ASSOC);
 
-                while ($row = $result_camareros->fetch_assoc()) {
+                foreach ($result_camareros as $row) {
                     $selectedCamarero = ($filterCamarero == $row['id_camarero']) ? 'selected' : '';
                     echo "<option value='" . $row['id_camarero'] . "' $selectedCamarero>" . $row['name_camarero'] . " " . $row['surname_camarero'] . "</option>";
                 }
-
-                $stmt_camareros->close();
                 ?>
             </select>
         </form>
@@ -158,23 +150,22 @@
             $tipos .= "i";
         }
 
+        // Preparar y ejecutar la consulta con PDO
+        $stmt_history = $conn->prepare($sql);
+
         // Si se tienen parámetros, se vinculan
         if (!empty($tipos)) {
-            // Preparar y ejecutar la consulta
-            $stmt_history = $conn->prepare($sql);
-        
+            $parametrosRef = array_values($parametros);
             // Vincular los parámetros dinámicamente
-            $stmt_history->bind_param($tipos, ...$parametros);
+            $stmt_history->execute($parametrosRef);
         } else {
-            // Si no hay parámetros, simplemente ejecutamos la consulta sin bind_param
-            $stmt_history = $conn->prepare($sql);
+            // Si no hay parámetros, simplemente ejecutamos la consulta
+            $stmt_history->execute();
         }
 
-        // Ejecutar la consulta
-        $stmt_history->execute();
-        $result_history = $stmt_history->get_result();
+        $result_history = $stmt_history->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($result_history->num_rows > 0) {
+        if (count($result_history) > 0) {
             echo "<div class='historial'>";
                 echo "<table border='1'>
                         <tr class'attr_tr'>
@@ -185,7 +176,7 @@
                             <th>Cliente asignado</th>
                             <th>Fecha desocupación</th>
                         </tr>";
-                while ($row = $result_history->fetch_assoc()) {
+                foreach ($result_history as $row) {
                     echo "<tr>
                             <td>" . $row['name_sala'] . "</td>
                             <td>Mesa " . $row['id_mesa'] . " (" . $row['n_asientos'] . " asientos)</td>
@@ -201,10 +192,11 @@
             echo "<p>No hay historial disponible.</p>";
         }
 
-        $stmt_history->close();
+        $stmt_history->closeCursor();
     ?>
 </body>
 </html>
+
 <?php
-    $conn->close();
+    $conn = null;
 ?>

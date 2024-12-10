@@ -10,36 +10,35 @@
     <form action="./mesas.php" method="POST" id="fomruarioDiv">
         <div class="container">
             <?php
-                require_once "../Procesos/conection.php";  // Conexión PDO
+                require_once "../Procesos/conection.php";
                 session_start();
-
                 // Sesión iniciada
-                if (!isset($_SESSION["camareroID"]) && !isset($_SESSION["usuarioID"]) && !isset($_SESSION["adminID"])) {
+                if (!isset($_SESSION["camareroID"])) {
                     header('Location: ../index.php?error=nosesion');
                     exit();
                 } else {
-                    $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : (isset($_SESSION["usuarioID"]) ? $_SESSION["usuarioID"] : $_SESSION["adminID"]);
+                    $id_user = $_SESSION["camareroID"];
                 }
 
-                // Consulta SQL para obtener las salas y contar las mesas libres
-                $consulta = "
-                    SELECT s.name_sala, 
-                           COUNT(m.id_mesa) AS total_mesas, 
-                           SUM(CASE WHEN h.fecha_A IS NULL THEN 1 ELSE 0 END) AS mesas_libres
-                    FROM tbl_salas s
-                    LEFT JOIN tbl_mesas m ON s.id_salas = m.id_sala
-                    LEFT JOIN tbl_historial h ON m.id_mesa = h.id_mesa AND h.fecha_NA IS NULL
-                    GROUP BY s.id_salas
-                ";
-                
-                // Preparar y ejecutar la consulta
-                $stmt = $conn->prepare($consulta);
-                if ($stmt->execute()) {
-                    // Obtener los resultados usando fetch() de PDO
+                try {
+                    // Consulta SQL para obtener las salas y contar las mesas libres
+                    $consulta = "
+                        SELECT s.name_sala, 
+                               COUNT(m.id_mesa) AS total_mesas, 
+                               SUM(CASE WHEN h.fecha_A IS NULL THEN 1 ELSE 0 END) AS mesas_libres
+                        FROM tbl_salas s
+                        LEFT JOIN tbl_mesas m ON s.id_salas = m.id_sala
+                        LEFT JOIN tbl_historial h ON m.id_mesa = h.id_mesa AND h.fecha_NA IS NULL
+                        GROUP BY s.id_salas
+                    ";
+
+                    $stmt = $conn->prepare($consulta);
+                    $stmt->execute();
+
                     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    
-                    // Generación de botones para cada sala con el conteo de mesas libres
+
                     if (count($resultado) > 0) {
+                        // Generación de botones para cada sala con el conteo de mesas libres
                         foreach ($resultado as $fila) {
                             $nombre_sala = htmlspecialchars($fila['name_sala']); // Sanitizar el nombre de la sala
                             $total_mesas = $fila['total_mesas'];
@@ -50,8 +49,9 @@
                     } else {
                         echo "<p>No hay salas disponibles</p>";
                     }
-                } else {
-                    echo "<p>Error al ejecutar la consulta</p>";
+
+                } catch (Exception $e) {
+                    echo "<p>Error al ejecutar la consulta: " . $e->getMessage() . "</p>";
                 }
             ?>
         </div>
@@ -59,15 +59,7 @@
     <div class="contenedor">
         <div class="footer">
             <a href="../Procesos/destruir.php"><button type="submit" class="logout">Cerrar Sesión</button></a>
-            <?php
-                if (isset($_SESSION["camareroID"])) {
-                    echo '<a href="./historial.php"><button type="submit" class="back">Historial</button></a><br>';
-                }
-
-                if (isset($_SESSION["usuarioID"])) {
-                    echo '<a href="./reservar.php"><button type="submit" class="back">Reservar</button></a>';
-                }
-            ?>
+            <a href="./historial"><button type="submit" class="back">Historial</button></a>
             <h1>¡Selecciona una sala para ver su disponibilidad de mesas!</h1>
         </div>
         <div class="contenedor-superior">

@@ -39,12 +39,11 @@ CREATE TABLE tbl_historial (
     id_mesa INT NOT NULL
 );
 
-CREATE TABLE tbl_administrador(
-    id_administrador INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nombre_administrador VARCHAR(30) NOT NULL,
-    username_administrador VARCHAR(30) NOT NULL,
-    pwd_administrador CHAR(64) NOT NULL
-);
+ALTER TABLE tbl_camarero
+ADD COLUMN roles ENUM('camarero', 'admin') NOT NULL DEFAULT 'camarero';
+
+ALTER TABLE tbl_usuarios
+ADD COLUMN roles ENUM('usuario') NOT NULL DEFAULT 'usuario';
 
 ALTER TABLE tbl_mesas ADD CONSTRAINT fk_sala_mesa FOREIGN KEY (id_sala) REFERENCES tbl_salas(id_salas);
 ALTER TABLE tbl_historial ADD CONSTRAINT fk_camarero_asignado FOREIGN KEY (assigned_by) REFERENCES tbl_camarero(id_camarero);
@@ -66,9 +65,8 @@ VALUES
 ('Lucía', 'Morales', 'lmorales', SHA2('Camarero123.', 256)),
 ('David', 'Ruiz', 'druiz', SHA2('Camarero123.', 256));
 
-INSERT INTO tbl_administrador (nombre_administrador, username_administrador, pwd_administrador)
-VALUES
-('administrador', 'admin', SHA2('admin', 256));
+INSERT INTO tbl_camarero (name_camarero, surname_camarero, username_camarero, pwd_camarero, roles)
+VALUES ('admin', 'admin', 'admin', SHA2('admin', 256), 'admin');
 
 -- Inserciones en la tabla tbl_salas
 INSERT INTO tbl_salas (name_sala, tipo_sala)

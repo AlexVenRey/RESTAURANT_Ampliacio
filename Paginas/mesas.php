@@ -19,9 +19,26 @@
                 header('Location: ../index.php');
                 exit();
             } else {
+                // Obtener el ID del usuario activo
                 $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : (isset($_SESSION["usuarioID"]) ? $_SESSION["usuarioID"] : (isset($_SESSION["adminID"]) ? $_SESSION["adminID"] : null));
-                // sesión de sala
-                if (isset($_POST['sala'])){
+
+                // Conexión a la base de datos para obtener el rol del usuario
+                require_once "../Procesos/conection.php"; 
+                $stmt_role = $conn->prepare("SELECT roles FROM tbl_camarero WHERE id_camarero = ?");
+                $stmt_role->bindValue(1, $id_user, PDO::PARAM_INT);
+                $stmt_role->execute();
+                $user_role = $stmt_role->fetchColumn();
+                $stmt_role->closeCursor();
+
+                // Verificar el rol del usuario
+                if ($user_role !== 'admin' && $user_role !== 'camarero') {
+                    // Si el rol no es válido, redirigir al inicio
+                    header('Location: ../index.php');
+                    exit();
+                }
+
+                // Sesión de sala
+                if (isset($_POST['sala'])) {
                     $_SESSION['sala'] = $_POST['sala'];
                 }
             }
