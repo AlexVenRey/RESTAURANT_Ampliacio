@@ -7,12 +7,17 @@
     <title>TPV Salas</title>
 </head>
 <body>
-    <form action="./mesas.php" method="POST" id="fomruarioDiv">
-        <div class="container">
+    <header class="header">
+        <a href="../Procesos/destruir.php"><button type="button" class="logout">Cerrar Sesión</button></a>
+        <a href="./historial"><button type="button" class="back">Historial</button></a>
+        <a href="./reservar"><button type="button" class="back">Reservas</button></a>
+    </header>
+
+    <main>
+        <form action="./mesas.php" method="POST" id="formularioSalas">
             <?php
                 require_once "../Procesos/conection.php";
                 session_start();
-                // Sesión iniciada
                 if (!isset($_SESSION["camareroID"])) {
                     header('Location: ../index.php?error=nosesion');
                     exit();
@@ -21,7 +26,6 @@
                 }
 
                 try {
-                    // Consulta SQL para obtener las salas y contar las mesas libres
                     $consulta = "
                         SELECT s.name_sala, 
                                COUNT(m.id_mesa) AS total_mesas, 
@@ -31,43 +35,31 @@
                         LEFT JOIN tbl_historial h ON m.id_mesa = h.id_mesa AND h.fecha_NA IS NULL
                         GROUP BY s.id_salas
                     ";
-
                     $stmt = $conn->prepare($consulta);
                     $stmt->execute();
 
                     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     if (count($resultado) > 0) {
-                        // Generación de botones para cada sala con el conteo de mesas libres
                         foreach ($resultado as $fila) {
-                            $nombre_sala = htmlspecialchars($fila['name_sala']); // Sanitizar el nombre de la sala
+                            $nombre_sala = htmlspecialchars($fila['name_sala']);
                             $total_mesas = $fila['total_mesas'];
                             $mesas_libres = $fila['mesas_libres'];
-                            echo "<input type='submit' name='sala' value='$nombre_sala' class='input_sala input_$nombre_sala'>";
-                            echo "<p class='input_sala2 mesas_disponibles_$nombre_sala'>($mesas_libres/$total_mesas)</p>";
+                            echo "
+                                <div class='sala-item'>
+                                    <button type='submit' name='sala' value='$nombre_sala' class='btn-sala'>$nombre_sala</button>
+                                    <p class='info-mesas'>($mesas_libres/$total_mesas mesas libres)</p>
+                                </div>
+                            ";
                         }
                     } else {
                         echo "<p>No hay salas disponibles</p>";
                     }
-
                 } catch (Exception $e) {
                     echo "<p>Error al ejecutar la consulta: " . $e->getMessage() . "</p>";
                 }
             ?>
-        </div>
-    </form>
-    <div class="contenedor">
-        <div class="footer">
-            <a href="../Procesos/destruir.php"><button type="submit" class="logout">Cerrar Sesión</button></a>
-            <a href="./historial"><button type="submit" class="back">Historial</button></a>
-            <h1>¡Selecciona una sala para ver su disponibilidad de mesas!</h1>
-        </div>
-        <div class="contenedor-superior">
-            <img src="../CSS/img/Mapeado/MapeadoRestaurante.png" alt="" class="mapeado">
-        </div>
-    </div>
-    <!-- SweetAlert -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../JS/alertIndex.js"></script>
+        </form>
+    </main>
 </body>
 </html>
