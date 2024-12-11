@@ -2,6 +2,8 @@ CREATE DATABASE db_restaurante;
 
 USE db_restaurante;
 
+-- TAULES
+
 CREATE TABLE tbl_camarero (
     id_camarero INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name_camarero VARCHAR(30) NOT NULL,
@@ -31,12 +33,23 @@ CREATE TABLE tbl_historial (
     id_mesa INT NOT NULL
 );
 
-            ALTER TABLE tbl_camarero
-            ADD COLUMN roles ENUM('camarero', 'admin') NOT NULL DEFAULT 'camarero';
+CREATE TABLE tbl_reservas (
+    id_reserva INT AUTO_INCREMENT PRIMARY KEY,
+    id_mesa INT NOT NULL,
+    hora_reserva DATETIME NOT NULL,
+    hora_fin DATETIME NOT NULL,
+    FOREIGN KEY (id_mesa) REFERENCES tbl_mesas(id_mesa) ON DELETE CASCADE
+);
+
+
+ALTER TABLE tbl_camarero
+ADD COLUMN roles ENUM('camarero', 'admin') NOT NULL DEFAULT 'camarero';
 
 ALTER TABLE tbl_mesas ADD CONSTRAINT fk_sala_mesa FOREIGN KEY (id_sala) REFERENCES tbl_salas(id_salas);
 ALTER TABLE tbl_historial ADD CONSTRAINT fk_camarero_asignado FOREIGN KEY (assigned_by) REFERENCES tbl_camarero(id_camarero);
 ALTER TABLE tbl_historial ADD CONSTRAINT fk_mesa_historial FOREIGN KEY (id_mesa) REFERENCES tbl_mesas(id_mesa);
+
+-- INSERTS
 
 INSERT INTO tbl_camarero (name_camarero, surname_camarero, username_camarero, pwd_camarero)
 VALUES
@@ -54,8 +67,8 @@ VALUES
 ('Lucía', 'Morales', 'lmorales', SHA2('Camarero123.', 256)),
 ('David', 'Ruiz', 'druiz', SHA2('Camarero123.', 256));
 
-            INSERT INTO tbl_camarero (name_camarero, surname_camarero, username_camarero, pwd_camarero, roles)
-            VALUES ('admin', 'admin', 'admin', SHA2('admin', 256), 'admin');
+INSERT INTO tbl_camarero (name_camarero, surname_camarero, username_camarero, pwd_camarero, roles)
+VALUES ('admin', 'admin', 'admin', SHA2('admin', 256), 'admin');
 
 -- Inserciones en la tabla tbl_salas
 INSERT INTO tbl_salas (name_sala, tipo_sala)

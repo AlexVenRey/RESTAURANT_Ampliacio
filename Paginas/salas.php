@@ -14,16 +14,24 @@
     </header>
 
     <main>
+        <?php
+        session_start();
+        if (!isset($_SESSION["camareroID"])) {
+            header('Location: ../index.php?error=nosesion');
+            exit();
+        }
+
+        // Mostrar el botón Administrar solo si el rol es admin
+        if ($_SESSION["rol"] === "admin") {
+            echo '<a href="./administrar.php"><button type="button" class="back">Administrar</button></a>';
+        }
+        ?>
+
         <form action="./mesas.php" method="POST" id="formularioSalas">
             <?php
                 require_once "../Procesos/conection.php";
-                session_start();
-                if (!isset($_SESSION["camareroID"])) {
-                    header('Location: ../index.php?error=nosesion');
-                    exit();
-                } else {
-                    $id_user = $_SESSION["camareroID"];
-                }
+
+                $id_user = $_SESSION["camareroID"];
 
                 try {
                     $consulta = "
