@@ -53,7 +53,7 @@ try {
     <!-- Tabla de Camareros -->
     <h2>Lista de Camareros</h2>
     <?php if (count($camareros) > 0): ?>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -61,6 +61,9 @@ try {
                     <th>Apellido</th>
                     <th>Nombre de usuario</th>
                     <th>Rol</th>
+                    <th class="narrow">Editar</th>
+                    <th class="narrow">Eliminar</th>
+                    <th class="narrow">Añadir</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,6 +74,15 @@ try {
                         <td><?= htmlspecialchars($camarero['surname_camarero']) ?></td>
                         <td><?= htmlspecialchars($camarero['username_camarero']) ?></td>
                         <td><?= htmlspecialchars($camarero['roles']) ?></td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/editar_camarero.php?id=<?= $camarero['id_camarero'] ?>">✏️</a>
+                        </td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/eliminar_camarero.php?id=<?= $camarero['id_camarero'] ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar este camarero?')">❌</a>
+                        </td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/añadir_camarero.php">➕</a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -82,12 +94,15 @@ try {
     <!-- Tabla de Salas -->
     <h2>Lista de Salas</h2>
     <?php if (count($salas) > 0): ?>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Tipo</th>
+                    <th class="narrow">Editar</th>
+                    <th class="narrow">Eliminar</th>
+                    <th class="narrow">Añadir</th>
                 </tr>
             </thead>
             <tbody>
@@ -96,6 +111,15 @@ try {
                         <td><?= htmlspecialchars($sala['id_salas']) ?></td>
                         <td><?= htmlspecialchars($sala['name_sala']) ?></td>
                         <td><?= htmlspecialchars($sala['tipo_sala']) ?></td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/editar_sala.php?id=<?= $sala['id_salas'] ?>">✏️</a>
+                        </td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/eliminar_sala.php?id=<?= $sala['id_salas'] ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar esta sala?')">❌</a>
+                        </td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/añadir_sala.php">➕</a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -107,12 +131,15 @@ try {
     <!-- Tabla de Mesas -->
     <h2>Lista de Mesas</h2>
     <?php if (count($mesas) > 0): ?>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <th>ID Mesa</th>
                     <th>Número de Asientos</th>
                     <th>Sala</th>
+                    <th class="narrow">Editar</th>
+                    <th class="narrow">Eliminar</th>
+                    <th class="narrow">Añadir</th>
                 </tr>
             </thead>
             <tbody>
@@ -121,6 +148,15 @@ try {
                         <td><?= htmlspecialchars($mesa['id_mesa']) ?></td>
                         <td><?= htmlspecialchars($mesa['n_asientos']) ?></td>
                         <td><?= htmlspecialchars($mesa['name_sala']) ?></td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/editar_mesa.php?id=<?= $mesa['id_mesa'] ?>">✏️</a>
+                        </td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/eliminar_mesa.php?id=<?= $mesa['id_mesa'] ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar esta mesa?')">❌</a>
+                        </td>
+                        <td class="narrow action-btn">
+                            <a href="acciones/añadir_mesa.php">➕</a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

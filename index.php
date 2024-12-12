@@ -39,3 +39,4 @@
 <!-- ADMINISTRAR: Usuaris(cambrers), sales, taules, cadires - CRUD -->
 <!-- BOTÓ: Per poder canviar imatges a cada sala -->
 <!-- Arxiu README, explicació -->
+<!-- quiero que una ocupacion sea una reserva donde la hora de reserva sea entre el intervalo de hora inicial y hora final -->
