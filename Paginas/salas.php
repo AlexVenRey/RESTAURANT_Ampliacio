@@ -11,9 +11,6 @@
         <a href="../Procesos/destruir.php"><button type="button" class="logout">Cerrar Sesión</button></a>
         <a href="./historial"><button type="button" class="back">Historial</button></a>
         <a href="./reservar"><button type="button" class="back">Reservas</button></a>
-    </header>
-
-    <main>
         <?php
         session_start();
         if (!isset($_SESSION["camareroID"])) {
@@ -26,7 +23,9 @@
             echo '<a href="./administrar.php"><button type="button" class="back">Administrar</button></a>';
         }
         ?>
+    </header>
 
+    <main>
         <form action="./mesas.php" method="POST" id="formularioSalas">
             <?php
                 require_once "../Procesos/conection.php";

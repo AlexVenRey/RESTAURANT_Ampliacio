@@ -35,3 +35,7 @@
     </div>
 </body>
 </html>
+<!-- PREGUNTAR ASIGNACIÓ DE TAULES AUTOMÀTIQUES -->
+<!-- ADMINISTRAR: Usuaris(cambrers), sales, taules, cadires - CRUD -->
+<!-- BOTÓ: Per poder canviar imatges a cada sala -->
+<!-- Arxiu README, explicació -->
