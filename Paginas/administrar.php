@@ -43,12 +43,11 @@ try {
 </head>
 <body>
     <header class="header">
-        <!-- Botón para volver a salas -->
         <a href="./salas.php"><button type="button" class="back">Volver</button></a>
     </header>    
     
     <br>
-
+    
     <h1>Administración del Restaurante</h1>
 
     <!-- Tabla de Camareros -->
@@ -60,7 +59,7 @@ try {
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Usuario</th>
+                    <th>Nombre de usuario</th>
                     <th>Rol</th>
                 </tr>
             </thead>

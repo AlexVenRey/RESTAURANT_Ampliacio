@@ -81,6 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/estilos-reservas.css">
     <title>Reservas</title>
 </head>
 <body>
@@ -88,7 +89,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <a href="../Procesos/destruir.php"><button type="button" class="logout">Cerrar Sesión</button></a>
         <a href="./salas.php"><button type="button" class="back">Volver a salas</button></a>
     </header>
-
     <form class="formReserva" method="POST" action="">
         <h1>Reserva una mesa</h1>
 
