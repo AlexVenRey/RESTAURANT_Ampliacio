@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if ($stmtVerificar->rowCount() > 0) {
             // La mesa ya está reservada
-            // echo "AQUI POSAREM UN SPAN";
+            echo "<p class='text-danger'>La mesa ya está reservada en el horario seleccionado.</p>";
         } else {
             // Si no está reservada, realizar la reserva
             $sqlReservar = "INSERT INTO tbl_reservas (id_mesa, hora_reserva, hora_fin) 
@@ -41,36 +41,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmtReservar->bindParam(':hora_fin', $horaFinFormatted, PDO::PARAM_STR);
             $stmtReservar->execute();
 
-            echo "<p>La mesa ha sido reservada con éxito.</p>";
+            // Después de insertar la reserva, actualizar el estado de la mesa
+            $sqlActualizarEstado = "UPDATE tbl_mesas SET estado = 'reservada' WHERE id_mesa = :mesa";
+            $stmtActualizarEstado = $conn->prepare($sqlActualizarEstado);
+            $stmtActualizarEstado->bindParam(':mesa', $mesa, PDO::PARAM_INT);
+            $stmtActualizarEstado->execute();
+
+            echo "<p class='text-success'>La mesa ha sido reservada con éxito.</p>";
         }
-    }
-
-    // Proceso de asignación (basado en asignar_mesa.php)
-    if (isset($_POST['assigned_to']) && $_POST['assigned_to'] !== '') {
-        $assigned_to = $_POST['assigned_to'];
-        $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : 
-                  (isset($_SESSION["usuarioID"]) ? $_SESSION["usuarioID"] : $_SESSION["adminID"]);
-
-        // Validar el nombre asignado VALIDACIONS JS
-        if (preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]{3,}$/", $assigned_to)) {
-            $stmt_insert = $conn->prepare("INSERT INTO tbl_historial (fecha_A, assigned_by, assigned_to, id_mesa) VALUES (NOW(), ?, ?, ?)");
-            $stmt_insert->bindValue(1, $id_user, PDO::PARAM_INT);
-            $stmt_insert->bindValue(2, $assigned_to, PDO::PARAM_STR);
-            $stmt_insert->bindValue(3, $mesa, PDO::PARAM_INT);
-            $stmt_insert->execute();
-
-            if ($stmt_insert->rowCount() > 0) {
-                echo "<p class='text-success'>Mesa $mesa asignada exitosamente a $assigned_to.</p>";
-            } else {
-                echo "<p class='text-danger'>Error al asignar la mesa. Intenta de nuevo.</p>";
-            }
-        } else {
-            echo "<p class='text-danger'>El nombre asignado no es válido. Debe tener al menos 3 caracteres y contener solo letras.</p>";
-            // POSAREM UN SPAN
-        }
-    } elseif (isset($_POST['assigned_to']) && $_POST['assigned_to'] === '') {
-        echo "<p class='text-danger'>No has ingresado un nombre.</p>";
-        // POSAREM UN SPAN AMB CODI JS
     }
 }
 ?>
@@ -86,8 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
     <header class="header">
-        <a href="../Procesos/destruir.php"><button type="button" class="logout">Cerrar Sesión</button></a>
         <a href="./salas.php"><button type="button" class="back">Volver a salas</button></a>
+        <a href="./disponibilidad_mesas.php"><button type="button" class="back">Disponibilidad mesas</button></a>
     </header>
     <form class="formReserva" method="POST" action="">
         <h1>Reserva una mesa</h1>
@@ -157,7 +135,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         // Agregar atributo "disabled" si la mesa está ocupada
                         $disabled = $estadoMesa === "ocupada" ? "disabled" : "";
                         echo "<option value='" . htmlspecialchars($mesa['id_mesa']) . "' $disabled>Mesa " . htmlspecialchars($mesa['id_mesa']) . " ($estadoMesa)</option>";
-
                     }
                 } else {
                     echo "<option disabled>No hay mesas disponibles</option>";
