@@ -7,6 +7,8 @@ if (!isset($_SESSION["camareroID"])) {
     exit();
 }
 
+$success = false;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $n_asientos = $_POST['n_asientos'];
     $id_sala = $_POST['id_sala'];
@@ -17,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':id_sala', $id_sala);
 
     if ($stmt->execute()) {
-        header("Location: ../administrar.php?success=añadido_mesa");
+        $success = true;
     } else {
         echo "Error al agregar la mesa.";
     }
@@ -32,11 +34,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Añadir Mesa</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
+    <?php if ($success): ?>
+        <script>
+            Swal.fire({
+                title: '¡Mesa añadida!',
+                text: 'La mesa ha sido añadida con éxito.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../administrar.php';
+                }
+            });
+        </script>
+    <?php endif; ?>
+
     <h1>Añadir Mesa</h1>
-    <form method="POST" id="addMesaForm">
+    <form method="POST">
         <label for="n_asientos">Número de Asientos:</label>
         <input type="number" name="n_asientos" required>
         <br>
@@ -55,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit" id="submitBtn">Añadir Mesa</button>
+        <button type="submit">Guardar</button>
     </form>
 </body>
 </html>

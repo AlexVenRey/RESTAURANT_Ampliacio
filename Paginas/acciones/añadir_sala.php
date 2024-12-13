@@ -17,6 +17,8 @@ $tipoSalaResult = $stmtTipoSala->fetch(PDO::FETCH_ASSOC);
 preg_match("/^enum\((.*)\)$/", $tipoSalaResult['Type'], $matches);
 $tiposSala = str_getcsv($matches[1], ",", "'");
 
+$success = false;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name_sala'];
     $type = $_POST['tipo_sala'];
@@ -27,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':type', $type);
 
     if ($stmt->execute()) {
-        header("Location: ../administrar.php?success=añadido_sala");
+        $success = true;
     } else {
         echo "Error al agregar la sala.";
     }
@@ -42,11 +44,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Añadir Sala</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
+    <?php if ($success): ?>
+        <script>
+            Swal.fire({
+                title: '¡Sala añadida!',
+                text: 'La sala ha sido añadida con éxito.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../administrar.php';
+                }
+            });
+        </script>
+    <?php endif; ?>
+
     <h1>Añadir Sala</h1>
-    <form method="POST" id="addSalaForm">
+    <form method="POST">
         <label for="name_sala">Nombre:</label>
         <input type="text" name="name_sala" required>
         <br>
@@ -61,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit" id="submitBtn">Añadir Sala</button>
+        <button type="submit">Guardar</button>
     </form>
 </body>
 </html>

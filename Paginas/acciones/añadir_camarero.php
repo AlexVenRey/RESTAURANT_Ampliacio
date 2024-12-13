@@ -7,6 +7,8 @@ if (!isset($_SESSION["camareroID"])) {
     exit();
 }
 
+$success = false;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name_camarero'];
     $surname = $_POST['surname_camarero'];
@@ -22,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':role', $role);
 
     if ($stmt->execute()) {
-        header("Location: ../administrar.php?success=añadido");
+        $success = true;
     } else {
         echo "Error al agregar el camarero.";
     }
@@ -37,11 +39,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Añadir Camarero</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
+    <?php if ($success): ?>
+        <script>
+            Swal.fire({
+                title: '¡Camarero añadido!',
+                text: 'El camarero ha sido añadido con éxito.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../administrar.php';
+                }
+            });
+        </script>
+    <?php endif; ?>
+
     <h1>Añadir Camarero</h1>
-    <form method="POST" id="addCamareroForm">
+    <form method="POST">
         <label for="name_camarero">Nombre:</label>
         <input type="text" name="name_camarero" required>
         <br>
@@ -59,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit" id="submitBtn">Añadir Camarero</button>
+        <button type="submit">Guardar</button>
     </form>
 </body>
 </html>
