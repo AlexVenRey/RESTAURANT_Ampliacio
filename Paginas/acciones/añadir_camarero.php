@@ -36,10 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Añadir Camarero</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
     <h1>Añadir Camarero</h1>
-    <form method="POST">
+    <form method="POST" id="addCamareroForm">
         <label for="name_camarero">Nombre:</label>
         <input type="text" name="name_camarero" required>
         <br>
@@ -57,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit">Añadir Camarero</button>
+        <button type="submit" id="submitBtn">Añadir Camarero</button>
     </form>
 </body>
 </html>

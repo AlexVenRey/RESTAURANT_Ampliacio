@@ -33,6 +33,7 @@ if (isset($_GET['id'])) {
         $name = $_POST['name_sala'];
         $type = $_POST['tipo_sala'];
 
+        // Actualitzar la sala en la base de dades
         $sqlUpdate = "UPDATE tbl_salas SET name_sala = :name, tipo_sala = :type WHERE id_salas = :id";
         $stmtUpdate = $conn->prepare($sqlUpdate);
         $stmtUpdate->bindParam(':name', $name);
@@ -57,10 +58,14 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Editar Sala</title>
+    <!-- Incloure SweetAlert2 des del CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Incloure el fitxer de SweetAlert2 extern -->
+    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
     <h1>Editar Sala</h1>
-    <form method="POST">
+    <form method="POST" id="editForm">
         <label for="name_sala">Nombre:</label>
         <input type="text" name="name_sala" value="<?= htmlspecialchars($sala['name_sala']) ?>" required>
         <br>
@@ -75,7 +80,7 @@ if (isset($_GET['id'])) {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit">Actualizar Sala</button>
+        <button type="submit" id="submitBtn">Actualizar Sala</button>
     </form>
 </body>
 </html>

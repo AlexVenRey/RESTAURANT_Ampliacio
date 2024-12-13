@@ -31,16 +31,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Añadir Mesa</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
     <h1>Añadir Mesa</h1>
-    <form method="POST">
+    <form method="POST" id="addMesaForm">
         <label for="n_asientos">Número de Asientos:</label>
         <input type="number" name="n_asientos" required>
         <br>
         <label for="id_sala">Sala:</label>
         <select name="id_sala" required>
-            <!-- Aquí puedes añadir las opciones de salas dinámicamente -->
             <?php
                 $sqlSalas = "SELECT id_salas, name_sala FROM tbl_salas";
                 $stmtSalas = $conn->prepare($sqlSalas);
@@ -54,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit">Añadir Mesa</button>
+        <button type="submit" id="submitBtn">Añadir Mesa</button>
     </form>
 </body>
 </html>

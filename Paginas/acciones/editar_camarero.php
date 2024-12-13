@@ -52,10 +52,14 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Editar Camarero</title>
+    <!-- Incloure SweetAlert2 des del CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Incloure el fitxer de SweetAlert2 extern -->
+    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
     <h1>Editar Camarero</h1>
-    <form method="POST">
+    <form method="POST" id="editForm">
         <label for="name_camarero">Nombre:</label>
         <input type="text" name="name_camarero" value="<?= htmlspecialchars($camarero['name_camarero']) ?>" required>
         <br>
@@ -73,7 +77,7 @@ if (isset($_GET['id'])) {
         <br>
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
-        <button type="submit">Actualizar Camarero</button>
+        <button type="submit" id="submitBtn">Actualizar Camarero</button>
     </form>
 </body>
 </html>
