@@ -57,27 +57,28 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
+    <script src="../../JS/editarSala.js" defer></script> 
     <title>Editar Sala</title>
-    <!-- Incloure SweetAlert2 des del CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Incloure el fitxer de SweetAlert2 extern -->
-    <script src="../../JS/alertAcciones.js" defer></script>
 </head>
 <body>
     <h1>Editar Sala</h1>
-    <form method="POST" id="editForm">
+    <form method="POST" id="editFormSala">
         <label for="name_sala">Nombre:</label>
-        <input type="text" name="name_sala" value="<?= htmlspecialchars($sala['name_sala']) ?>" required>
+        <input type="text" name="name_sala" id="name_sala" value="<?= htmlspecialchars($sala['name_sala']) ?>">
+        <span id="errorName_sala" class="error-message" style="color:red; font-size: 0.9em;"></span>
         <br>
+
         <label for="tipo_sala">Tipo:</label>
-        <select name="tipo_sala" required>
+        <select name="tipo_sala" id="tipo_sala" required>
             <?php foreach ($tiposSala as $tipo): ?>
                 <option value="<?= htmlspecialchars($tipo) ?>" <?= $tipo == $sala['tipo_sala'] ? 'selected' : '' ?>>
                     <?= htmlspecialchars($tipo) ?>
                 </option>
             <?php endforeach; ?>
         </select>
+        <span id="errorTipo_sala" class="error-message" style="color:red; font-size: 0.9em;"></span>
         <br>
+
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
         <br>
         <button type="submit" id="submitBtn">Actualizar Sala</button>

@@ -41,6 +41,7 @@ CREATE TABLE tbl_reservas (
     FOREIGN KEY (id_mesa) REFERENCES tbl_mesas(id_mesa) ON DELETE CASCADE
 );
 
+ALTER TABLE tbl_salas ADD imagen_sala VARCHAR(255) NULL;
 
 ALTER TABLE tbl_camarero
 ADD COLUMN roles ENUM('camarero', 'admin') NOT NULL DEFAULT 'camarero';

@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Añadir Sala</title>
+    <script src="../../JS/añadirSala.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -64,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h1>Añadir Sala</h1>
     <form method="POST">
         <label for="name_sala">Nombre:</label>
-        <input type="text" name="name_sala" required>
+        <input type="text" name="name_sala">
         <br>
         <label for="tipo_sala">Tipo:</label>
         <select name="tipo_sala" required>

@@ -52,31 +52,36 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../CSS/estilos-acciones.css">
     <title>Editar Camarero</title>
-    <!-- Incloure SweetAlert2 des del CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Incloure el fitxer de SweetAlert2 extern -->
-    <script src="../../JS/alertAcciones.js" defer></script>
+    <script src="../../JS/editarCamarero.js" defer></script> <!-- Enlace al archivo JS -->
 </head>
 <body>
     <h1>Editar Camarero</h1>
     <form method="POST" id="editForm">
         <label for="name_camarero">Nombre:</label>
-        <input type="text" name="name_camarero" value="<?= htmlspecialchars($camarero['name_camarero']) ?>" required>
+        <input type="text" id="name_camarero" name="name_camarero" value="<?= htmlspecialchars($camarero['name_camarero']) ?>">
+        <span id="nameError" class="error-message" style="color: red;"></span>
         <br>
+        
         <label for="surname_camarero">Apellido:</label>
-        <input type="text" name="surname_camarero" value="<?= htmlspecialchars($camarero['surname_camarero']) ?>" required>
+        <input type="text" id="surname_camarero" name="surname_camarero" value="<?= htmlspecialchars($camarero['surname_camarero']) ?>">
+        <span id="surnameError" class="error-message" style="color: red;"></span>
         <br>
+        
         <label for="username_camarero">Nombre de usuario:</label>
-        <input type="text" name="username_camarero" value="<?= htmlspecialchars($camarero['username_camarero']) ?>" required>
+        <input type="text" id="username_camarero" name="username_camarero" value="<?= htmlspecialchars($camarero['username_camarero']) ?>">
+        <span id="usernameError" class="error-message" style="color: red;"></span>
         <br>
+        
         <label for="roles">Rol:</label>
-        <select name="roles" required>
+        <select name="roles">
             <option value="camarero" <?= $camarero['roles'] === 'camarero' ? 'selected' : '' ?>>Camarero</option>
             <option value="admin" <?= $camarero['roles'] === 'admin' ? 'selected' : '' ?>>Admin</option>
         </select>
         <br>
+        
         <a href="../administrar.php"><button type="button">Volver a Administrar</button></a>
-        <br>
+        <!-- <br> -->
+        
         <button type="submit" id="submitBtn">Actualizar Camarero</button>
     </form>
 </body>
