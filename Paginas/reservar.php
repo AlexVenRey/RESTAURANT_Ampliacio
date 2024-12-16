@@ -4,11 +4,12 @@ require_once "../Procesos/conection.php";
 
 // Procesar la reserva
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST['fecha'], $_POST['hora'], $_POST['sala'], $_POST['mesa'])) {
+    if (isset($_POST['fecha'], $_POST['hora'], $_POST['sala'], $_POST['mesa'], $_POST['nombre_reserva'])) {
         $fecha = $_POST['fecha'];
         $hora = $_POST['hora'];
         $sala = $_POST['sala'];
         $mesa = $_POST['mesa'];
+        $nombre_reserva = trim($_POST['nombre_reserva']);
 
         // Calcular la hora de fin (2 horas después)
         $horaInicio = strtotime($fecha . ' ' . $hora);
@@ -31,45 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "<p class='text-danger'>La mesa ya está reservada en el horario seleccionado.</p>";
         } else {
             // Realizar la reserva
-            $sqlReservar = "INSERT INTO tbl_reservas (id_mesa, hora_reserva, hora_fin) 
-                            VALUES (:mesa, :hora_reserva, :hora_fin)";
+            $sqlReservar = "INSERT INTO tbl_reservas (id_mesa, hora_reserva, hora_fin, nombre_reserva) 
+                            VALUES (:mesa, :hora_reserva, :hora_fin, :nombre_reserva)";
             $stmtReservar = $conn->prepare($sqlReservar);
             $stmtReservar->bindParam(':mesa', $mesa, PDO::PARAM_INT);
             $stmtReservar->bindParam(':hora_reserva', $horaInicioFormatted, PDO::PARAM_STR);
             $stmtReservar->bindParam(':hora_fin', $horaFinFormatted, PDO::PARAM_STR);
+            $stmtReservar->bindParam(':nombre_reserva', $nombre_reserva, PDO::PARAM_STR);
             $stmtReservar->execute();
 
             echo "<p class='text-success'>La mesa ha sido reservada con éxito.</p>";
         }
     }
-
-    // Proceso de asignación
-    if (isset($_POST['assigned_to']) && $_POST['assigned_to'] !== '') {
-        $assigned_to = $_POST['assigned_to'];
-        $id_user = isset($_SESSION["camareroID"]) ? $_SESSION["camareroID"] : 
-                  (isset($_SESSION["usuarioID"]) ? $_SESSION["usuarioID"] : $_SESSION["adminID"]);
-
-        if (preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,}$/", $assigned_to)) {
-            $stmt_insert = $conn->prepare("INSERT INTO tbl_historial (fecha_A, assigned_by, assigned_to, id_mesa) VALUES (NOW(), ?, ?, ?)");
-            $stmt_insert->bindValue(1, $id_user, PDO::PARAM_INT);
-            $stmt_insert->bindValue(2, $assigned_to, PDO::PARAM_STR);
-            $stmt_insert->bindValue(3, $mesa, PDO::PARAM_INT);
-            $stmt_insert->execute();
-
-            if ($stmt_insert->rowCount() > 0) {
-                echo "<p class='text-success'>Mesa $mesa asignada exitosamente a $assigned_to.</p>";
-            } else {
-                echo "<p class='text-danger'>Error al asignar la mesa. Intenta de nuevo.</p>";
-            }
-        } else {
-            echo "<p class='text-danger'>El nombre asignado no es válido. Debe tener al menos 3 caracteres y contener solo letras.</p>";
-        }
-    } elseif (isset($_POST['assigned_to']) && $_POST['assigned_to'] === '') {
-        echo "<p class='text-danger'>No has ingresado un nombre.</p>";
-    }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,8 +117,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ?>
         </select>
         <br>
-        <label for="assigned_to">Asignar nombre:</label>
-        <input type="text" id="assigned_to" name="assigned_to" placeholder="Nombre de la reserva">
+        <label for="nombre_reserva">Nombre de la reserva:</label>
+        <input type="text" id="nombre_reserva" name="nombre_reserva">
         <br>
         <input type="submit" value="Reservar mesa">
     </form>

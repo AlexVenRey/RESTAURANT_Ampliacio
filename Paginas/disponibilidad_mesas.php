@@ -2,6 +2,19 @@
 session_start();
 require_once "../Procesos/conection.php";
 
+// Procesar la anulación de reserva
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['anular_reserva'])) {
+    $id_mesa = $_POST['id_mesa'];
+    $sqlAnular = "DELETE FROM tbl_reservas WHERE id_mesa = :id_mesa";
+    $stmtAnular = $conn->prepare($sqlAnular);
+    $stmtAnular->bindParam(':id_mesa', $id_mesa, PDO::PARAM_INT);
+    if ($stmtAnular->execute()) {
+        echo "<p class='text-success'>Reserva anulada correctamente.</p>";
+    } else {
+        echo "<p class='text-danger'>Error al anular la reserva.</p>";
+    }
+}
+
 // Consulta para obtener el estado de las mesas
 $sql = "
     SELECT 
@@ -10,6 +23,7 @@ $sql = "
         m.id_sala, 
         r.hora_reserva, 
         r.hora_fin, 
+        r.nombre_reserva,
         h.assigned_to,
         h.fecha_A AS hora_inicio, 
         h.fecha_NA AS hora_fin_ocupacion
@@ -65,9 +79,11 @@ function obtenerEstadoMesa($hora_reserva, $hora_fin, $assigned_to) {
             <tr>
                 <th>Mesa</th>
                 <th>Estado</th>
+                <th>Nombre de la Reserva</th>
                 <th>Nombre Asignado</th>
                 <th>Hora Inicio Reserva</th>
                 <th>Hora Fin Reserva</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -86,9 +102,20 @@ function obtenerEstadoMesa($hora_reserva, $hora_fin, $assigned_to) {
                         }
                         ?>
                     </td>
+                    <td><?php echo $mesa['nombre_reserva'] ? htmlspecialchars($mesa['nombre_reserva']) : 'N/A'; ?></td>
                     <td><?php echo $mesa['assigned_to'] ? htmlspecialchars($mesa['assigned_to']) : 'Ninguno'; ?></td>
                     <td><?php echo $mesa['hora_reserva'] ? date('d/m/Y H:i', strtotime($mesa['hora_reserva'])) : 'N/A'; ?></td>
                     <td><?php echo $mesa['hora_fin'] ? date('d/m/Y H:i', strtotime($mesa['hora_fin'])) : 'N/A'; ?></td>
+                    <td>
+                        <?php if ($estado === 'reservada'): ?>
+                            <form method="POST" action="">
+                                <input type="hidden" name="id_mesa" value="<?php echo $mesa['id_mesa']; ?>">
+                                <button type="submit" name="anular_reserva" class="btn-anular">Anular Reserva</button>
+                            </form>
+                        <?php else: ?>
+                            N/A
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

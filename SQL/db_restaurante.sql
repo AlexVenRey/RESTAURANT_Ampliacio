@@ -41,6 +41,7 @@ CREATE TABLE tbl_reservas (
     FOREIGN KEY (id_mesa) REFERENCES tbl_mesas(id_mesa) ON DELETE CASCADE
 );
 
+ALTER TABLE tbl_reservas ADD nombre_reserva VARCHAR(50) NOT NULL;
 ALTER TABLE tbl_salas ADD imagen_sala VARCHAR(255) NULL;
 
 ALTER TABLE tbl_camarero
